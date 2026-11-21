@@ -1,0 +1,49 @@
+# Pemeriksaan sebelum commit. Pasang sekali: `uvx pre-commit install`;
+# jalankan manual: `uvx pre-commit run --all-files`.
+# Ruff dan mypy dijalankan lewat `uv run` agar versinya sama persis dengan uv.lock (AKR-02 §8.13).
+# Paket resmi LAM INFOKOM (instrumen_resmi/) tidak boleh diubah, jadi dikecualikan.
+exclude: ^(instrumen_resmi/|web/node_modules/|\.venv/)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+        args: ["--maxkb=2048"] # data uji harus kecil dan fiktif; dokumen prodi asli tidak masuk repo
+      - id: detect-private-key
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+        exclude: ^web/tsconfig.*\.json$ # tsconfig memakai komentar (JSONC)
+      - id: check-toml
+
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: lint-istilah
+        name: istilah baku (AKR-00 bab 4)
+        entry: uv run python scripts/lint_istilah.py
+        language: system
+        files: ^(akreditasi/|prompts/|web/src/|scripts/istilah_allow\.txt$)
+        pass_filenames: false
+        require_serial: true
+      - id: mypy
+        name: mypy akreditasi
+        entry: uv run mypy akreditasi
+        language: system
+        types: [python]
+        files: ^akreditasi/
+        pass_filenames: false
+        require_serial: true

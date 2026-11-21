@@ -1,0 +1,24 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+runs/
+*.log
+.env
+~$*.xlsx
+.DS_Store
+Thumbs.db
+web/node_modules/
+web/dist/
+web/playwright-report/
+web/test-results/
+
+# Dokumen prodi asli, jawaban kunci prodi, dan hasil uji tahap 0 (NFR-17; jangan di-commit)
+data/
+eval/*/
+!eval/contoh/
+web/dist-real/
+web/dist-mock/
+.playwright-mcp/
